@@ -1,44 +1,61 @@
-var Expenses = React.createClass({
-	getInitialState: function(){
-		return {expenses: this.props.data};
-	},
-	getDefaultProps: function(){
-		expenses: []
-	},
-	handleNewExpense: function(expense){		
+class Expenses extends React.Component{
+
+	constructor(props) {
+		super(props);
+		this.state = {expenses: this.props.data};
+
+		this.debits = this.debits.bind(this);
+		this.credits = this.credits.bind(this);
+		this.balance = this.balance.bind(this);
+		this.deleteExpense = this.deleteExpense.bind(this);
+		this.updateExpense = this.updateExpense.bind(this);
+		this.handleNewExpense = this.handleNewExpense.bind(this);
+	}
+
+	// getDefaultProps() {
+	// 	expenses: []
+	// }
+
+	handleNewExpense(expense) {		
 		expenses = React.addons.update(this.state.expenses, {$push: [expense]})
 		this.setState({expenses: expenses});
-	},
-	credits: function(){
+	}
+
+	credits() {
 		var expenses = this.state.expenses.filter(function(expense, index){
 			return expense.amount >= 0
 		});
 		return expenses.reduce(function(total, expense){
 			return total + expense.amount
 		},0)
-	},
-	debits: function(){
+	}
+
+	debits() {
 		var expenses = this.state.expenses.filter(function(expense, index){
 			return expense.amount < 0
 		});
 		return expenses.reduce(function(total, expense){
 			return total + expense.amount
 		},0)
-	},
-	balance: function(){
+	}
+
+	balance() {
 		return this.credits() + this.debits();
-	},
-	deleteExpense: function(expense){
+	}
+	
+	deleteExpense(expense) {
 		index = this.state.expenses.indexOf(expense)
 		expenses = React.addons.update(this.state.expenses, {$splice: [[index, 1]]});
-		this.replaceState({expenses: expenses});
-	},
-	updateExpense: function(expense, updated_expense){
+		this.setState({expenses: expenses});
+	}
+
+	updateExpense(expense, updated_expense) {
 		index = this.state.expenses.indexOf(expense)
 		expenses = React.addons.update(this.state.expenses, {$splice: [[index, 1, updated_expense]]});
-		this.replaceState({expenses: expenses});
-	},
-	render: function(){
+		this.setState({expenses: expenses});
+	}
+
+	render() {
 		var deleteExpense = this.deleteExpense;
 		var updateExpense = this.updateExpense;
 		return (
@@ -71,4 +88,5 @@ var Expenses = React.createClass({
 			</div>
 		)
 	}
-});
+	
+}

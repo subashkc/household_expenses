@@ -1,15 +1,23 @@
-var Expense = React.createClass({
-	getInitialState: function(){
-		return {edit: false}
-	},
-	handleEditToggle: function(e){
+class Expense extends React.Component {
+
+	constructor(props) {
+		super(props);
+		this.state = { edit: false, date: this.props.expense.date, title: this.props.expense.title, amount: this.props.expense.amount };
+
+		this.handleDelete = this.handleDelete.bind(this);
+		this.handleUpdate = this.handleUpdate.bind(this);
+		this.handleEditToggle = this.handleEditToggle.bind(this);
+	}
+
+	handleEditToggle(e) {
 		e.preventDefault();
-		this.setState({edit: !this.state.edit})
-	},
-	handleUpdate: function(e){
+		this.setState({edit: !this.state.edit});
+	}
+
+	handleUpdate(e) {
 		e.preventDefault();
 		var that = this;
-		var expenseData = {title: this.refs.title.value, date: this.refs.date.value, amount: this.refs.amount.value}
+		var expenseData = {title: this.state.title, date: this.state.date, amount: this.state.amount}
 		$.ajax({
 			url: "/expenses/"+this.props.expense.id,
 			type: 'PUT',
@@ -23,8 +31,9 @@ var Expense = React.createClass({
 
 			}
 		});
-	},
-	handleDelete: function(e){
+	}
+
+	handleDelete(e) {
 		e.preventDefault();
 		var confirmDelete = confirm('Are you sure?');
 		if(confirmDelete){
@@ -41,8 +50,9 @@ var Expense = React.createClass({
 				}
 			})		
 		}
-	},
-	showExpenseRow: function(){
+	}
+
+	showExpenseRow() {
 		return (
 			<tr>
 				<td>{this.props.expense.date}</td>
@@ -54,18 +64,19 @@ var Expense = React.createClass({
 				</td>
 			</tr>
 		)
-	},
-	showExpenseForm: function(){
+	}
+
+	showExpenseForm() {
 		return (
 			<tr>
 				<td>
-					<input type="text" className="form-control" ref="date" defaultValue={this.props.expense.date} />
+					<input type="text" className="form-control" onChange={event => this.setState({date: event.target.value})} defaultValue={this.props.expense.date} />
 				</td>
 				<td>
-					<input type="text" className="form-control" ref="title" defaultValue={this.props.expense.title} />
+					<input type="text" className="form-control" onChange={event => this.setState({title: event.target.value})} defaultValue={this.props.expense.title} />
 				</td>
 				<td>
-					<input type="text" className="form-control" ref="amount" defaultValue={this.props.expense.amount} />
+					<input type="text" className="form-control" onChange={event => this.setState({amount: event.target.value})} defaultValue={this.props.expense.amount} />
 				</td>
 				<td>
 					<a href="" className="btn btn-default" onClick={this.handleUpdate}>Update</a>
@@ -73,12 +84,13 @@ var Expense = React.createClass({
 				</td>
 			</tr>
 		)
-	},
-	render: function(){
+	}
+	render(){
 		if(this.state.edit){
 			return this.showExpenseForm();
 		} else {
 			return this.showExpenseRow();
 		}		
 	}
-});
+	
+}

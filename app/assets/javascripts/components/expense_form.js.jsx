@@ -1,34 +1,50 @@
-var ExpenseForm = React.createClass({
-	getInitialState: function(){
-		return {title: '', date: '', amount: 0}
-	},
-	valid: function(){
+class ExpenseForm extends React.Component{
+
+
+	constructor(props) {
+		super(props);
+		
+		this.defaultState = {title: '', date: '', amount: 0};
+		this.state = this.defaultState;
+
+		this.valid = this.valid.bind(this);
+		this.handleChange = this.handleChange.bind(this);
+		this.handleSubmit = this.handleSubmit.bind(this);
+	}
+
+	valid() {
 		this.state.title && this.state.date && this.state.amount
-	},
-	handleChange: function(e){
+	}
+
+	resetState() {
+		this.setState(this.defaultState);
+	}
+
+	handleChange(e) {
 		var state = {};
 		state[e.target.name] = e.target.value;
 		this.setState(state);
-	},
-	handleSubmit: function(e){
+	}
+
+	handleSubmit(e) {
 		e.preventDefault();
-		var that = this;
+		// var that = this;
 		$.ajax({
 	    	url:"/expenses",
-	     	data: {expense: that.state},
+	     	data: {expense: this.state},
 	     	datdaType:'json',
 	      	type:'POST',
 	      	success: function(data) {
-	        	that.props.handleNewExpense(data);
-	        	that.setState(that.getInitialState());
-	      	},
-		    error: function(){
-		    	
-		     }
+	        	this.props.handleNewExpense(data);
+	        	this.resetState();
+	        	// that.setState(that.getInitialState());
+	      	}.bind(this),
+		    error: function(){}
 	    });
 
-	},
-	render: function(){
+	}
+
+	render() {
 		return (
 			<form className="form-inline" onSubmit={this.handleSubmit}>
 				<div className="form-group">
@@ -44,4 +60,7 @@ var ExpenseForm = React.createClass({
 			</form>
 		)
 	}
-})
+}
+
+// var ExpenseForm = React.createClass({
+// })

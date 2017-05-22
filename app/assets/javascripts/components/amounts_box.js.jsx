@@ -1,5 +1,10 @@
-var AmountsBox = React.createClass({
-	render: function(){
+class AmountsBox extends React.Component{
+
+	constructor(props) {
+		super(props)
+	}
+
+	render() {
 		return (
 			<div className="col-md-4">
 				<div className={"panel panel-"+this.props.type}>
@@ -13,4 +18,4 @@ var AmountsBox = React.createClass({
 			</div>
 		)
 	}
-})
+}
